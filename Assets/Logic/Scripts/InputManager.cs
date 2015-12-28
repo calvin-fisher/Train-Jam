@@ -24,22 +24,25 @@ public class InputManager : MonoBehaviour {
         if (_mouseoverTile != null)
             _mouseoverTile.CancelHighlight();
 
-        RaycastHit raycastHit;
-        if (Physics.Raycast(ray, out raycastHit))
+        if (ModeManager.Instance.IsTrackPlacementOn)
         {
-            Debug.Log("Raycast hit ");
-            var hitTile = raycastHit.transform.gameObject.GetComponent<Tile>();
-
-            if (hitTile != null)
+            RaycastHit raycastHit;
+            if (Physics.Raycast(ray, out raycastHit))
             {
+                Debug.Log("Raycast hit ");
+                var hitTile = raycastHit.transform.gameObject.GetComponent<Tile>();
 
-                hitTile.Highlight();
-                _mouseoverTile = hitTile;
+                if (hitTile != null)
+                {
+
+                    hitTile.Highlight();
+                    _mouseoverTile = hitTile;
+                }
             }
-        }
-        else
-        {
-            _mouseoverTile = null;
+            else
+            {
+                _mouseoverTile = null;
+            }
         }
     }
 

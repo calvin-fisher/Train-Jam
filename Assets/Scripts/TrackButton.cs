@@ -17,8 +17,6 @@ public class TrackButton : MonoBehaviour {
     {
         Debug.Log(gameObject.name + " pressed");
 
-        GameObject.Instantiate(Track);
-
         if (!Active)
         {
             ModeManager.Instance.StartTrackPlacement();

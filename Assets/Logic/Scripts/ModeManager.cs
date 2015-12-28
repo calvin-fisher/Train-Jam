@@ -22,14 +22,17 @@ public class ModeManager : MonoBehaviour
 	
 	}
 
+    public bool IsTrackPlacementOn { get; private set; }
+
     public void StartTrackPlacement()
     {
         Debug.Log("Starting track placement");
-
+        IsTrackPlacementOn = true;
     }
 
     public void EndTrackPlacement()
     {
         Debug.Log("Ending track placement");
+        IsTrackPlacementOn = false;
     }
 }
