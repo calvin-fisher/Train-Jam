@@ -3,8 +3,8 @@ using System.Collections;
 
 public class TileManager : MonoBehaviour
 {
-    private const int Width = 1000;
-    private const int Length = 1000;
+    private const int Width = 100;
+    private const int Length = 100;
 
 	// Use this for initialization
 	void Start ()

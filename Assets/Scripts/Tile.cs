@@ -13,8 +13,7 @@ public class Tile : MonoBehaviour {
 	
 	}
 
-    void OnMouseDown()
-    {
-        Debug.Log("Tile clicked");
-    }
+
+
+    
 }
