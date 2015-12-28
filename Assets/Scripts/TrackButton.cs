@@ -19,7 +19,19 @@ public class TrackButton : MonoBehaviour {
 
         GameObject.Instantiate(Track);
 
+        if (!Active)
+        {
+            ModeManager.Instance.StartTrackPlacement();
+        }
+        else
+        {
+            ModeManager.Instance.EndTrackPlacement();
+        }
+
+        Active = !Active;
     }
+
+    private bool Active = false;
 
     public GameObject Track;
 }
