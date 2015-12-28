@@ -38,7 +38,7 @@ public class Tile : MonoBehaviour {
         if (Track == null)
         {
             var newTrack = GameObject.Instantiate(TrackGameObject);
-            newTrack.transform.position = this.transform.position;
+            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
 
             Track = newTrack.GetComponent<Track>();
         }
