@@ -13,32 +13,35 @@ public class InputManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-	    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+	    UpdateHighlightedTile();
+	}
+
+    private void UpdateHighlightedTile()
+    {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(ray.origin, ray.direction);
 
-	    RaycastHit raycastHit;
-	    if (Physics.Raycast(ray, out raycastHit))
-	    {
-	        Debug.Log("Raycast hit ");
+        if (_mouseoverTile != null)
+            _mouseoverTile.CancelHighlight();
 
-	        if (raycastHit.transform.gameObject != null)
-	        {
-	            // Unhighlight previous
-	            if (_mouseoverTile != null)
-	            {
-	                _mouseoverTile.gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
-	            }
+        RaycastHit raycastHit;
+        if (Physics.Raycast(ray, out raycastHit))
+        {
+            Debug.Log("Raycast hit ");
+            var hitTile = raycastHit.transform.gameObject.GetComponent<Tile>();
 
-	            // Highlight
-	            _mouseoverTile = raycastHit.transform.gameObject;
-	            _mouseoverTile.gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
-	        }
-	    }
-	    else
-	    {
-            _mouseoverTile.gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
+            if (hitTile != null)
+            {
+
+                hitTile.Highlight();
+                _mouseoverTile = hitTile;
+            }
+        }
+        else
+        {
+            _mouseoverTile = null;
         }
     }
 
-    private GameObject _mouseoverTile = null;
+    private Tile _mouseoverTile = null;
 }
