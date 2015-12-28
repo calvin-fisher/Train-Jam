@@ -14,6 +14,11 @@ public class InputManager : MonoBehaviour {
 	void Update ()
 	{
 	    UpdateHighlightedTile();
+
+	    if (Input.GetMouseButtonDown(0))
+	    {
+	        MouseDown();
+	    }
 	}
 
     private void UpdateHighlightedTile()
@@ -46,5 +51,19 @@ public class InputManager : MonoBehaviour {
         }
     }
 
+    private void MouseDown()
+    {
+        if (ModeManager.Instance.IsTrackPlacementOn)
+        {
+            if (_mouseoverTile != null)
+            {
+                var newTrack = GameObject.Instantiate(Track);
+                newTrack.transform.position = _mouseoverTile.transform.position;
+            }
+        }
+    }
+
     private Tile _mouseoverTile = null;
+
+    public GameObject Track;
 }
