@@ -22,11 +22,16 @@ public class CubeMove : MonoBehaviour {
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            transform.position -= (new Vector3(0, 0f, 1)) * MoveSpeed;
+            transform.position -= (new Vector3(0, 0, 1)) * MoveSpeed;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             transform.position += (new Vector3(1, 0, 0)) * MoveSpeed;
         }
 	}
+
+    public void DoStuff()
+    {
+        Debug.Log("I did stuff!");
+    }
 }
