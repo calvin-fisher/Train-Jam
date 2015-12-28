@@ -25,6 +25,7 @@ public class ModeManager : MonoBehaviour
     public void StartTrackPlacement()
     {
         Debug.Log("Starting track placement");
+
     }
 
     public void EndTrackPlacement()
