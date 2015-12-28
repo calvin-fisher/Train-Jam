@@ -32,4 +32,19 @@ public class Tile : MonoBehaviour {
             _meshRenderer.material.color = Color.white;
         }
     }
+
+    public void LayTrack()
+    {
+        if (Track == null)
+        {
+            var newTrack = GameObject.Instantiate(TrackGameObject);
+            newTrack.transform.position = this.transform.position;
+
+            Track = newTrack.GetComponent<Track>();
+        }
+    }
+
+    public Track Track { get; private set; }
+
+    public GameObject TrackGameObject;
 }

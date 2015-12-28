@@ -13,15 +13,16 @@ public class InputManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-	    UpdateHighlightedTile();
+	    UpdateMouseoverTile();
 
-	    if (Input.GetMouseButtonDown(0))
-	    {
+        var mouseButtonDown = Input.GetMouseButton(0);
+        if (mouseButtonDown)
+        {
 	        MouseDown();
 	    }
 	}
 
-    private void UpdateHighlightedTile()
+    private void UpdateMouseoverTile()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(ray.origin, ray.direction);
@@ -31,17 +32,19 @@ public class InputManager : MonoBehaviour {
 
         if (ModeManager.Instance.IsTrackPlacementOn)
         {
-            RaycastHit raycastHit;
-            if (Physics.Raycast(ray, out raycastHit))
+            RaycastHit[] raycastHits = Physics.RaycastAll(ray);
+            if (raycastHits.Any())
             {
                 Debug.Log("Raycast hit ");
-                var hitTile = raycastHit.transform.gameObject.GetComponent<Tile>();
 
-                if (hitTile != null)
+                foreach (var hit in raycastHits)
                 {
-
-                    hitTile.Highlight();
-                    _mouseoverTile = hitTile;
+                    var tile = hit.transform.gameObject.GetComponent<Tile>();
+                    if (tile != null)
+                    {
+                        tile.Highlight();
+                        _mouseoverTile = tile;
+                    }
                 }
             }
             else
@@ -57,8 +60,7 @@ public class InputManager : MonoBehaviour {
         {
             if (_mouseoverTile != null)
             {
-                var newTrack = GameObject.Instantiate(Track);
-                newTrack.transform.position = _mouseoverTile.transform.position;
+                _mouseoverTile.LayTrack();
             }
         }
     }
