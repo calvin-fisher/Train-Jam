@@ -35,14 +35,27 @@ public class Tile : MonoBehaviour {
 
     public void LayTrack()
     {
-        const float layer = 1f;
+        const float zLayer = 1f;
 
         if (Track == null)
         {
             var newTrack = GameObject.Instantiate(TrackGameObject);
-            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (layer * float.Epsilon), transform.position.z);
+            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer * float.Epsilon), transform.position.z);
 
             Track = newTrack.GetComponent<Track>();
+        }
+    }
+
+    public void BuildStructure()
+    {
+        const float zLayer = 2f;
+
+        if (Structure == null)
+        {
+            var newStructure = GameObject.Instantiate(StructureGameObject);
+            newStructure.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer * float.Epsilon), transform.position.z);
+
+            Structure = newStructure.GetComponent<Structure>();
         }
     }
 
@@ -53,10 +66,21 @@ public class Tile : MonoBehaviour {
             GameObject.Destroy(Track.gameObject);
             Track = null;
         }
+
+        if (Structure != null)
+        {
+            if (Structure.CanBulldoze)
+            {
+                GameObject.Destroy(Structure.gameObject);
+                Structure = null;
+            }
+        }
     }
 
     public Track Track { get; private set; }
+    public Structure Structure { get; private set; }
     public Coordinate Coordinate { get; set; }
 
     public GameObject TrackGameObject;
+    public GameObject StructureGameObject;
 }

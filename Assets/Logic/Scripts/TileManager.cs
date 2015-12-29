@@ -8,6 +8,8 @@ public class TileManager : MonoBehaviour
 
     public GameObject TileGameObject;
 
+    private readonly Random _random = new Random();
+
     public static TileManager Instance { get; private set; }
 
     // Use this for initialization
@@ -54,6 +56,11 @@ public class TileManager : MonoBehaviour
                 var tile = newTile.GetComponent<Tile>();
                 tile.Coordinate = new Coordinate(x, y);
                 _grid[x, y] = tile;
+
+                if (Random.value <= 0.1f)
+                {
+                    tile.BuildStructure();
+                }
             }
         }
     }
