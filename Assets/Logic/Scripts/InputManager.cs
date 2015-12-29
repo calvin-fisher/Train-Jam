@@ -3,10 +3,12 @@ using System.Collections;
 using System.Linq;
 using UnityEditor;
 
-public class InputManager : MonoBehaviour {
+public class InputManager : MonoBehaviour
+{
+    public GameObject TrackGameObject;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 	
 	}
 	
@@ -35,8 +37,6 @@ public class InputManager : MonoBehaviour {
             RaycastHit[] raycastHits = Physics.RaycastAll(ray);
             if (raycastHits.Any())
             {
-                Debug.Log("Raycast hit ");
-
                 foreach (var hit in raycastHits)
                 {
                     var tile = hit.transform.gameObject.GetComponent<Tile>();
@@ -66,6 +66,4 @@ public class InputManager : MonoBehaviour {
     }
 
     private Tile _mouseoverTile = null;
-
-    public GameObject Track;
 }

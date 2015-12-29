@@ -6,7 +6,7 @@ public class TileManager : MonoBehaviour
     private const int Width = 100;
     private const int Length = 100;
 
-    public GameObject Tile;
+    public GameObject TileGameObject;
 
     // Use this for initialization
     void Start ()
@@ -36,7 +36,7 @@ public class TileManager : MonoBehaviour
         {
             for (int y = minY; y < maxY; y++)
             {
-                var newTile = GameObject.Instantiate(Tile);
+                var newTile = GameObject.Instantiate(TileGameObject);
                 newTile.transform.position = new Vector3(x, 0, y);
 
                 var tile = newTile.GetComponent<Tile>();
