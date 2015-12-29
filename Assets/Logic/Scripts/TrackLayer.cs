@@ -86,7 +86,7 @@ public class TrackLayer : MonoBehaviour
                 {
                     var tile = TileManager.Instance.Get(coordinate);
                     tile.CancelHighlight();
-                    tile.LayTrack();
+                    tile.BuildTrack();
                 }
 
                 _trackLayingPath = null;
@@ -113,8 +113,8 @@ public class TrackLayer : MonoBehaviour
             }
         }
 
-        // If off-grid, abort
-        if (e.NewTile == null || !_layingTrack)
+        // If off-grid or cancelled, abort
+        if (e.NewTile == null || !_layingTrack || !MenuManager.Instance.IsTrackPlacementOn)
         {
             _trackLayingPath = null;
             return;

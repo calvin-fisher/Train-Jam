@@ -8,8 +8,6 @@ public class TileManager : MonoBehaviour
 
     public GameObject TileGameObject;
 
-    private readonly Random _random = new Random();
-
     public static TileManager Instance { get; private set; }
 
     // Use this for initialization

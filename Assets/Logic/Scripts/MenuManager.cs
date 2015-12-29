@@ -7,7 +7,6 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance;
 
-    private Toggle[] _modeToggles = new Toggle[0];
     private Toggle _trackToggle;
     private Toggle _stationToggle;
     private Toggle _trainToggle;
@@ -40,14 +39,6 @@ public class MenuManager : MonoBehaviour
         _stationToggle = GameObject.Find("StationToggle").GetComponent<Toggle>();
         _trainToggle = GameObject.Find("TrainToggle").GetComponent<Toggle>();
         _bulldozeToggle = GameObject.Find("BulldozeToggle").GetComponent<Toggle>();
-
-        _modeToggles = new[]
-        {
-            _trackToggle,
-            _stationToggle,
-            _trainToggle,
-            _bulldozeToggle,
-        };
 
         _trackToggle.onValueChanged.AddListener(TrackToggled);
         _bulldozeToggle.onValueChanged.AddListener(BulldozeToggled);

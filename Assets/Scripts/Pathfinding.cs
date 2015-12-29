@@ -85,7 +85,3 @@ public class Pathfinding : MonoBehaviour {
         public Node Next;
     }
 }
-
-
-
-

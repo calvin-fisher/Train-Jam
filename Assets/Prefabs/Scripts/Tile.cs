@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
+public class Tile : MonoBehaviour
+{
+    public GameObject TrackGameObject;
+    public GameObject StructureGameObject;
 
-	// Use this for initialization
-	void Start ()
+    private MeshRenderer _meshRenderer;
+
+    // Use this for initialization
+    void Start ()
     {
         _meshRenderer = this.GetComponent<MeshRenderer>();
     }
@@ -14,8 +19,6 @@ public class Tile : MonoBehaviour {
     {
 	
 	}
-
-    private MeshRenderer _meshRenderer;
 
     public void Highlight(Color color)
     {
@@ -33,7 +36,7 @@ public class Tile : MonoBehaviour {
         }
     }
 
-    public void LayTrack()
+    public void BuildTrack()
     {
         const float zLayer = 1f;
 
@@ -85,7 +88,8 @@ public class Tile : MonoBehaviour {
     {
         get { return Structure == null; }
     }
-
-    public GameObject TrackGameObject;
-    public GameObject StructureGameObject;
+    public bool CanBuildStructure
+    {
+        get { return Structure == null; }
+    }
 }
