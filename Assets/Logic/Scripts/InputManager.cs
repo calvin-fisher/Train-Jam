@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -8,31 +9,29 @@ public class InputManager : MonoBehaviour
 {
     public GameObject TrackGameObject;
 
+    public static InputManager Instance { get; private set; }
+
     // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    void Start ()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            GameObject.Destroy(this);
+        }
+    }
+
+    // Update is called once per frame
+    void Update ()
 	{
 	    UpdateMouseoverTile();
-
-	    if (Input.GetMouseButtonDown(0))
-	    {
-	        ProcessMouseDown();
-	    }
-
-	    if (Input.GetMouseButtonUp(0))
-	    {
-	        ProcessMouseUp();
-	    }
-
 	}
 
     private void UpdateMouseoverTile()
     {
-        _mouseoverTileChangedThisFrame = false;
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(ray.origin, ray.direction);
 
@@ -44,119 +43,58 @@ public class InputManager : MonoBehaviour
                 var tile = hit.transform.gameObject.GetComponent<Tile>();
                 if (tile != null)
                 {
-                    if (_mouseoverTile != tile)
+                    if (MouseoverTile != tile)
                     {
-                        if (_mouseoverTile != null)
+                        if (MouseoverTile != null)
                         {
-                            _mouseoverTile.CancelHighlight();
+                            MouseoverTile.CancelHighlight();
                         }
 
-                        MouseoverTileChanged(tile);
+                        ProcessMouseoverTileChanged(tile);
                     }
                 }
             }
         }
         else
         {
-            if (_mouseoverTile == null)
+            if (MouseoverTile == null)
                 return;
 
-            MouseoverTileChanged(null);
+            ProcessMouseoverTileChanged(null);
         }
     }
 
-    private void MouseoverTileChanged(Tile newTile)
+    private void ProcessMouseoverTileChanged(Tile newTile)
     {
-        _mouseoverTileChangedThisFrame = true;
+        var eventArgs = new MouseoverTileChangedEventArgs(MouseoverTile, newTile);
 
-        if (_mouseoverTile != null)
-            _mouseoverTile.CancelHighlight();
+        if (MouseoverTile != null)
+            MouseoverTile.CancelHighlight();
 
-        if (newTile == null)
-        {
-            _mouseoverTile = null;
-        }
-        else
-        {
+        if (newTile != null)
             newTile.Highlight(Color.yellow);
-            _mouseoverTile = newTile;
-            //Debug.Log(string.Format("Mouseover tile ({0},{1})", _mouseoverTile.Coordinate.X, _mouseoverTile.Coordinate.Y));
-        }
 
-        if (_layingTrack) UpdateTrackLaying();
+        MouseoverTile = newTile;
+
+        if (MouseoverTileChanged != null)
+            MouseoverTileChanged(this, eventArgs);
     }
 
-    private void ProcessMouseDown()
+    public Tile MouseoverTile { get; private set; }
+
+    public static event MouseoverTileChangedEventHandler MouseoverTileChanged;
+}
+
+public delegate void MouseoverTileChangedEventHandler(object sender, MouseoverTileChangedEventArgs e);
+
+public class MouseoverTileChangedEventArgs : EventArgs
+{
+    public MouseoverTileChangedEventArgs(Tile oldTile, Tile newTile)
     {
-        if (ModeManager.Instance.IsTrackPlacementOn)
-        {
-            if (!_layingTrack && _mouseoverTile != null)
-            {
-                _layingTrack = true;
-                _trackLayingStart = _mouseoverTile.Coordinate;
-            }
-        }
+        OldTile = oldTile;
+        NewTile = newTile;
     }
 
-    private void UpdateTrackLaying()
-    {
-        // Clear previous path
-        if (_trackLayingPath != null)
-        {
-            foreach (var coordinate in _trackLayingPath)
-            {
-                TileManager.Instance.Get(coordinate).CancelHighlight();
-            }
-        }
-
-        // If off-grid, abort
-        if (_mouseoverTile == null || !_layingTrack)
-        {
-            _trackLayingPath = null;
-            return;
-        }
-
-        // Update path
-        _trackLayingPathStartNode = Pathfinding.FindPath(_trackLayingStart, _mouseoverTile.Coordinate);
-        if (_trackLayingPathStartNode == null)
-        {
-            Debug.Log("Error finding path to target");
-            return;
-        }
-
-        // Highlight new path
-        _trackLayingPath = _trackLayingPathStartNode.SelfAndSuccessors().Select(x => x.Position).ToArray();
-        foreach (var coordinate in _trackLayingPath)
-        {
-            TileManager.Instance.Get(coordinate).Highlight(Color.blue);
-        }
-    }
-
-    private void ProcessMouseUp()
-    {
-        if (_layingTrack)
-        {
-            if (_trackLayingPath != null)
-            {
-                foreach (var coordinate in _trackLayingPath)
-                {
-                    var tile = TileManager.Instance.Get(coordinate);
-                    tile.CancelHighlight();
-                    tile.LayTrack();
-                }
-
-                _trackLayingPath = null;
-                _trackLayingPathStartNode = null;
-            }
-
-            _layingTrack = false;
-        }
-    }
-
-    private bool _mouseoverTileChangedThisFrame = false;
-    private Tile _mouseoverTile = null;
-    private bool _layingTrack = false;
-    private Coordinate _trackLayingStart;
-    private Pathfinding.Node _trackLayingPathStartNode;
-    private Coordinate[] _trackLayingPath;
+    public readonly Tile OldTile;
+    public readonly Tile NewTile;
 }
