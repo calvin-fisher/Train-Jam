@@ -17,11 +17,11 @@ public class Tile : MonoBehaviour {
 
     private MeshRenderer _meshRenderer;
 
-    public void Highlight()
+    public void Highlight(Color color)
     {
         if (_meshRenderer != null)
         {
-            _meshRenderer.material.color = Color.yellow;
+            _meshRenderer.material.color = color;
         }
     }
 
@@ -47,6 +47,7 @@ public class Tile : MonoBehaviour {
     }
 
     public Track Track { get; private set; }
+    public Coordinate Coordinate { get; set; }
 
     public GameObject TrackGameObject;
 }
