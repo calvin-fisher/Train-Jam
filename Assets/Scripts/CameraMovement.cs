@@ -27,15 +27,15 @@ public class CameraMovement : MonoBehaviour
         {
             _delta += transform.up * MoveSpeed;
         }
-        else if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
             _delta -= transform.right * MoveSpeed;
         }
-        else if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
             _delta += transform.right * MoveSpeed;
         }
-        else if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S))
         {
             _delta -= transform.up * MoveSpeed;
         }
