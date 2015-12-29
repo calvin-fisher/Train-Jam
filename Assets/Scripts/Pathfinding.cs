@@ -22,31 +22,38 @@ public class Pathfinding : MonoBehaviour {
 
         var currentNode = startNode;
         var visitedTiles = new List<Coordinate>();
-        while (currentNode.Position != end)
+        var route = FindPathInner(currentNode, end, visitedTiles);
+        
+        return route;
+    }
+
+    private static Node FindPathInner(Node currentNode, Coordinate end, List<Coordinate> visitedTiles)
+    {
+        if (currentNode.Position == end)
+            return currentNode;
+
+        var nextSteps = currentNode.Position.GetAdjacentNeighbors()
+            .Except(visitedTiles)
+            .Where(x => TileManager.Instance.Get(x).CanBuildTrack)
+            .Select(x => new Node(x, end))
+            .Where(x => x.HeuristicDistanceToEnd <= currentNode.HeuristicDistanceToEnd)
+            .OrderBy(x => x.HeuristicDistanceToEnd)
+            .ThenBy(x => x.LargestDifferenceToEnd);
+
+        foreach (var candidate in nextSteps)
         {
-            var nextSteps = currentNode.Position.GetAdjacentNeighbors()
-                .Except(visitedTiles)
-                .Select(x => new Node(x, end))
-                .OrderBy(x => x.HeuristicDistanceToEnd)
-                .ThenBy(x => x.LargestDifferenceToEnd);
-            //var nextSteps = currentNode.Position.GetAdjacentNeighbors().ToArray();
-            //var excludedAlreadyVisited = nextSteps.Except(visitedTiles).ToArray();
-            //var testNodes = excludedAlreadyVisited.Select(x => new Node(x, end)).ToArray();
-            //var ordered = testNodes.OrderBy(x => x.HeuristicDistanceToEnd)
-            //    .ThenBy(x => x.LargestDifferenceToEnd);
+            visitedTiles.Add(candidate.Position);
 
-            var bestNextStep = nextSteps.FirstOrDefault();
-
-            if (bestNextStep == null)
-                return null;
-
-            currentNode.Next = bestNextStep;
-            bestNextStep.Previous = currentNode;
-            visitedTiles.Add(currentNode.Position);
-            currentNode = bestNextStep;
+            var candidateRoute = FindPathInner(candidate, end, visitedTiles);
+            if (candidateRoute != null)
+            {
+                currentNode.Next = candidate;
+                candidate.Previous = currentNode;
+                return currentNode;
+            }
         }
 
-        return startNode;
+        return null;
     }
 
     public class Node

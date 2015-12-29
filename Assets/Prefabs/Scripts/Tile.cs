@@ -81,6 +81,11 @@ public class Tile : MonoBehaviour {
     public Structure Structure { get; private set; }
     public Coordinate Coordinate { get; set; }
 
+    public bool CanBuildTrack
+    {
+        get { return Structure == null; }
+    }
+
     public GameObject TrackGameObject;
     public GameObject StructureGameObject;
 }
