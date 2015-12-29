@@ -35,10 +35,12 @@ public class Tile : MonoBehaviour {
 
     public void LayTrack()
     {
+        const float layer = 1f;
+
         if (Track == null)
         {
             var newTrack = GameObject.Instantiate(TrackGameObject);
-            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
+            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (layer * float.Epsilon), transform.position.z);
 
             Track = newTrack.GetComponent<Track>();
         }

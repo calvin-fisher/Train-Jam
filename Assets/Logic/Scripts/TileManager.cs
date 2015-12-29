@@ -20,9 +20,18 @@ public class TileManager : MonoBehaviour
 
     private void CreateTiles()
     {
-        for (int x = 0; x < Width; x++)
+        var minX = 0 - (Width/2);
+        var minY = 0 - (Width/2);
+        var maxX = minX + Width;
+        var maxY = minY + Length;
+
+        Debug.Log(string.Format("Drawing {0} x {1} grid. X({2} to {3}) Y({4} to {5})",
+            Width, Length, minX, maxX, minY, maxY));
+
+
+        for (int x = minX; x < maxX; x++)
         {
-            for (int y = 0; y < Length; y++)
+            for (int y = minY; y < maxY; y++)
             {
                 var newTile = GameObject.Instantiate(Tile);
                 newTile.transform.position = new Vector3(x, 0, y);
