@@ -12,6 +12,7 @@ public class CameraMovement : MonoBehaviour
     }
 
     private const float MoveSpeed = 2f;
+    private const float MoveSpeedSizeCoefficient = 0.5f;
     private const float ScrollSpeed = 1f;
     private Vector3 _delta;
 
@@ -45,7 +46,7 @@ public class CameraMovement : MonoBehaviour
 
     private void Move()
     {
-        transform.position += _delta * Time.deltaTime;
+        transform.position += _delta * Time.deltaTime * (_camera.orthographicSize * MoveSpeedSizeCoefficient);
         _delta = Vector3.zero;
     }
 
