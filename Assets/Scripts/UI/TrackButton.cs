@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public class TrackButton : MonoBehaviour
 {
 
     private Button _button;
+    private Image _image;
     private ColorBlock _colorBlock;
 
 	// Use this for initialization
 	void Start ()
 	{
 	    _button = this.gameObject.GetComponent<Button>();
-        _colorBlock = _button.colors;;
+	    _image = this.gameObject.GetComponent<Image>();
+        _colorBlock = _button.colors;
     }
 	
 	// Update is called once per frame
@@ -29,12 +32,13 @@ public class TrackButton : MonoBehaviour
         {
             if (value)
             {
-                _colorBlock.normalColor = Color.yellow;
+                _image.color = Color.yellow;
             }
             else
             {
-                _colorBlock.normalColor = Color.white;
+                _image.color = Color.white;
             }
+            _active = !_active;
         }
     }
 
