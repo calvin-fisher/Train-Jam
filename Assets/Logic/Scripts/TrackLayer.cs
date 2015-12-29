@@ -26,7 +26,7 @@ public class TrackLayer : MonoBehaviour
 
     public void MouseDown()
     {
-        if (ModeManager.Instance.IsTrackPlacementOn)
+        if (MenuManager.Instance.IsTrackPlacementOn)
         {
             if (!_layingTrack && InputManager.Instance.MouseoverTile != null)
             {
