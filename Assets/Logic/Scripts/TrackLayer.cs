@@ -124,7 +124,7 @@ public class TrackLayer : MonoBehaviour
         _trackLayingPathStartNode = Pathfinding.FindPath(_trackLayingStart, e.NewTile.Coordinate);
         if (_trackLayingPathStartNode == null)
         {
-            Debug.Log("Error finding path to target");
+            _trackLayingPath = null;
             return;
         }
 
