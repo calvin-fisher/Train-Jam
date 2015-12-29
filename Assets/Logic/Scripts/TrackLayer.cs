@@ -15,28 +15,68 @@ public class TrackLayer : MonoBehaviour
 	void Update () {
         if (Input.GetMouseButtonDown(0))
         {
-            MouseDown();
+            MouseDownEvent();
         }
+
+	    if (Input.GetMouseButton(0))
+	    {
+	        MouseDownHeld();
+	    }
 
         if (Input.GetMouseButtonUp(0))
         {
-            MouseUp();
+            MouseUpEvent();
         }
     }
 
-    public void MouseDown()
+    public void MouseDownEvent()
     {
-        if (MenuManager.Instance.IsTrackPlacementOn)
+        switch (MenuManager.Instance.MenuMode)
         {
-            if (!_layingTrack && InputManager.Instance.MouseoverTile != null)
-            {
-                _layingTrack = true;
-                _trackLayingStart = InputManager.Instance.MouseoverTile.Coordinate;
-            }
+            case MenuMode.Track:
+                TrackPlacementMouseDown();
+                break;
         }
     }
 
-    public void MouseUp()
+    private void TrackPlacementMouseDown()
+    {
+        if (!_layingTrack && MouseoverTile != null)
+        {
+            _layingTrack = true;
+            _trackLayingStart = MouseoverTile.Coordinate;
+        }
+    }
+
+    private void BulldozeMouseDown()
+    {
+        if (MouseoverTile != null)
+        {
+            MouseoverTile.Bulldoze();
+        }
+    }
+
+    private void MouseDownHeld()
+    {
+        switch (MenuManager.Instance.MenuMode)
+        {
+            case MenuMode.Bulldoze:
+                BulldozeMouseDown();
+                break;
+        }
+    }
+
+    private void MouseUpEvent()
+    {
+        switch (MenuManager.Instance.MenuMode)
+        {
+            case MenuMode.Track:
+                TrackPlacementMouseUp();
+                break;
+        }
+    }
+
+    public void TrackPlacementMouseUp()
     {
         if (_layingTrack)
         {
@@ -55,6 +95,11 @@ public class TrackLayer : MonoBehaviour
 
             _layingTrack = false;
         }
+    }
+
+    private Tile MouseoverTile
+    {
+        get { return InputManager.Instance.MouseoverTile; }
     }
 
     private void OnMouseoverTileChanged(object sender, MouseoverTileChangedEventArgs e)

@@ -46,6 +46,15 @@ public class Tile : MonoBehaviour {
         }
     }
 
+    public void Bulldoze()
+    {
+        if (Track != null)
+        {
+            GameObject.Destroy(Track.gameObject);
+            Track = null;
+        }
+    }
+
     public Track Track { get; private set; }
     public Coordinate Coordinate { get; set; }
 
