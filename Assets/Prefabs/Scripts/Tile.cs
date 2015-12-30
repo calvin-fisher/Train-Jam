@@ -9,16 +9,16 @@ public class Tile : MonoBehaviour
     private MeshRenderer _meshRenderer;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         _meshRenderer = this.GetComponent<MeshRenderer>();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-	
-	}
+
+    }
 
     public void Highlight(Color color)
     {
@@ -36,16 +36,31 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public void BuildTrack()
+    public void BuildTrack(Coordinate? prev, Coordinate? next)
     {
         const float zLayer = 1f;
 
+        var newTrack = GameObject.Instantiate(TrackGameObject);
+        Track = newTrack.GetComponent<Track>();
+        var rotation = new Vector3();
+
         if (Track == null)
         {
-            var newTrack = GameObject.Instantiate(TrackGameObject);
-            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer * float.Epsilon), transform.position.z);
+            //TODO: Determine track type and rotation
+            if (prev == null && next == null) //Single track piece
+            {
+                rotation = this.gameObject.transform.rotation.eulerAngles;
+            }
+            //Double track piece
+            //Triple track piece
+            //Quad track piece
 
-            Track = newTrack.GetComponent<Track>();
+            newTrack.transform.eulerAngles = rotation;
+            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer * float.Epsilon), transform.position.z);
+        }
+        else
+        {
+            //Compare existing track type to new track type and determine appropriate track type & rotation
         }
     }
 

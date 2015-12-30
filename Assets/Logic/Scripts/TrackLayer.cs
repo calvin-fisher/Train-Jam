@@ -5,23 +5,24 @@ using System.Linq;
 
 public class TrackLayer : MonoBehaviour
 {
-	// Use this for initialization
-	void Start ()
-	{
-	    InputManager.MouseoverTileChanged += OnMouseoverTileChanged;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Use this for initialization
+    void Start()
+    {
+        InputManager.MouseoverTileChanged += OnMouseoverTileChanged;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             MouseDownEvent();
         }
 
-	    if (Input.GetMouseButton(0))
-	    {
-	        MouseDownHeld();
-	    }
+        if (Input.GetMouseButton(0))
+        {
+            MouseDownHeld();
+        }
 
         if (Input.GetMouseButtonUp(0))
         {
@@ -82,11 +83,22 @@ public class TrackLayer : MonoBehaviour
         {
             if (_trackLayingPath != null)
             {
-                foreach (var coordinate in _trackLayingPath)
+                for (var i = 0; i < _trackLayingPath.Length; i++)
                 {
-                    var tile = TileManager.Instance.Get(coordinate);
+                    var currentCoordinate = _trackLayingPath[i];
+
+                    Coordinate? previousCoordinate = null;
+                    if (i - 1 > 0)
+                        previousCoordinate = _trackLayingPath[i - 1];
+
+                    Coordinate? nextCoordinate = null;
+                    if (i + 1 < _trackLayingPath.Length)
+                        nextCoordinate = _trackLayingPath[i + 1];
+
+                    var tile = TileManager.Instance.Get(currentCoordinate);
+
                     tile.CancelHighlight();
-                    tile.BuildTrack();
+                    tile.BuildTrack(previousCoordinate, nextCoordinate);
                 }
 
                 _trackLayingPath = null;
