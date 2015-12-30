@@ -9,7 +9,6 @@ public class MenuManager : MonoBehaviour
 
     private Toggle _trackToggle;
     private Toggle _roadToggle;
-    private Toggle _trainToggle;
     private Toggle _bulldozeToggle;
 
     // Use this for initialization
@@ -44,7 +43,6 @@ public class MenuManager : MonoBehaviour
     {
         _trackToggle = GameObject.Find("TrackToggle").GetComponent<Toggle>();
         _roadToggle = GameObject.Find("RoadToggle").GetComponent<Toggle>();
-        _trainToggle = GameObject.Find("TrainToggle").GetComponent<Toggle>();
         _bulldozeToggle = GameObject.Find("BulldozeToggle").GetComponent<Toggle>();
 
         _trackToggle.onValueChanged.AddListener(TrackToggled);
