@@ -30,7 +30,14 @@ public class MenuManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-	
+	    if (Input.GetKeyDown(KeyCode.T))
+	    {
+	        _trackToggle.isOn = !_trackToggle.isOn;
+	    }
+        else if (Input.GetKeyDown(KeyCode.B))
+        {
+            _bulldozeToggle.isOn = !_bulldozeToggle.isOn;
+        }
 	}
 
     private void WireUpToggles()
