@@ -126,8 +126,11 @@ public class TrackLayer : MonoBehaviour
         // If not currently laying track, just highlight the square
         if (!_layingTrack)
         {
-            // TODO: Highlight red instead if building is not possible
-            mouseoverTile.Highlight(Color.yellow);
+            if (mouseoverTile != null)
+            {
+                // TODO: Highlight red instead if building is not possible
+                mouseoverTile.Highlight(Color.yellow);
+            }
             return;
         }
 
@@ -152,8 +155,11 @@ public class TrackLayer : MonoBehaviour
         if (MenuManager.Instance.MenuMode != MenuMode.Bulldoze)
             return;
 
-        // TODO: Highlight red instead if bulldozing is not possible
-        mouseoverTile.Highlight(Color.yellow);
+        if (mouseoverTile != null)
+        {
+            // TODO: Highlight red instead if bulldozing is not possible
+            mouseoverTile.Highlight(Color.yellow);
+        }
     }
 
     private void BulldozeMouseHeld()
