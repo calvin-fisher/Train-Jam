@@ -23,6 +23,11 @@ public class Track : Way
         }
     }
 
+    protected override Way GetWayForTile(Tile tile)
+    {
+        return tile.Track;
+    }
+
     #region Texture Drawing
     protected override void UpdateMaterial()
     {
@@ -45,11 +50,6 @@ public class Track : Way
                 MeshRenderer.material = Quadruple;
                 break;
         }
-    }
-
-    protected override Way GetWayForTile(Tile tile)
-    {
-        return tile.Track;
     }
 
     private void UpdateMaterial1()

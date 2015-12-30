@@ -8,7 +8,7 @@ public class MenuManager : MonoBehaviour
     public static MenuManager Instance;
 
     private Toggle _trackToggle;
-    private Toggle _stationToggle;
+    private Toggle _roadToggle;
     private Toggle _trainToggle;
     private Toggle _bulldozeToggle;
 
@@ -43,23 +43,34 @@ public class MenuManager : MonoBehaviour
     private void WireUpToggles()
     {
         _trackToggle = GameObject.Find("TrackToggle").GetComponent<Toggle>();
-        _stationToggle = GameObject.Find("StationToggle").GetComponent<Toggle>();
+        _roadToggle = GameObject.Find("RoadToggle").GetComponent<Toggle>();
         _trainToggle = GameObject.Find("TrainToggle").GetComponent<Toggle>();
         _bulldozeToggle = GameObject.Find("BulldozeToggle").GetComponent<Toggle>();
 
         _trackToggle.onValueChanged.AddListener(TrackToggled);
+        _roadToggle.onValueChanged.AddListener(RoadToggled);
         _bulldozeToggle.onValueChanged.AddListener(BulldozeToggled);
     }
 
     public MenuMode MenuMode { get; private set; }
 
-    public bool IsTrackPlacementOn { get { return MenuMode == MenuMode.Track; } }
     private void TrackToggled(bool newValue)
     {
         if (newValue)
         {
-            // TODO: Disable other modes
             MenuMode = MenuMode.Track;
+        }
+        else
+        {
+            MenuMode = MenuMode.None;
+        }
+    }
+
+    private void RoadToggled(bool newValue)
+    {
+        if (newValue)
+        {
+            MenuMode = MenuMode.Road;
         }
         else
         {
@@ -71,7 +82,6 @@ public class MenuManager : MonoBehaviour
     {
         if (newValue)
         {
-            // TODO: Disable other modes
             MenuMode = MenuMode.Bulldoze;
         }
         else
@@ -85,7 +95,7 @@ public enum MenuMode
 {
     None = 0,
     Track,
-    Station,
+    Road,
     Train,
     Bulldoze,
 }

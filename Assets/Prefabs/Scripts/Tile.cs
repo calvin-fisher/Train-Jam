@@ -4,6 +4,7 @@ using System.Collections;
 public class Tile : MonoBehaviour
 {
     public GameObject TrackGameObject;
+    public GameObject RoadGameObject;
     public GameObject StructureGameObject;
 
     private MeshRenderer _meshRenderer;
@@ -38,8 +39,6 @@ public class Tile : MonoBehaviour
 
     public void BuildTrack(Coordinate? newConnection = null)
     {
-        const float zLayer = 0.1f;
-
         if (Track != null)
         {
             if (newConnection != null)
@@ -50,10 +49,25 @@ public class Tile : MonoBehaviour
         }
 
         var newTrackGameObject = GameObject.Instantiate(TrackGameObject);
-        newTrackGameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer), transform.position.z);
-
         Track = newTrackGameObject.GetComponent<Track>();
         Track.Initialize(this, newConnection);
+        // TODO: Refactor track builder so that connections are updated all at once at the end, instead of having to be updated repeatedly throughout
+    }
+
+    public void BuildRoad(Coordinate? newConnection = null)
+    {
+        if (Road != null)
+        {
+            if (newConnection != null)
+            {
+                Road.AddConnection(newConnection.Value);
+            }
+            return;
+        }
+
+        var newTrackGameObject = GameObject.Instantiate(RoadGameObject);
+        Road = newTrackGameObject.GetComponent<Road>();
+        Road.Initialize(this, newConnection);
         // TODO: Refactor track builder so that connections are updated all at once at the end, instead of having to be updated repeatedly throughout
     }
 
