@@ -14,7 +14,6 @@ public enum TrackType
 public class Track : MonoBehaviour
 {
     private TrackType _trackType;
-
     public TrackType TrackType
     {
         set
@@ -28,7 +27,7 @@ public class Track : MonoBehaviour
     }
 
     [SerializeField]
-    private Material Single, Double, Triple, Quadrople, Turn;
+    private Material Single, Double, Triple, Quadruple, Turn;
 
     private Material _currentMaterial;
 
@@ -58,7 +57,7 @@ public class Track : MonoBehaviour
                 _currentMaterial = Triple;
                 break;
             case TrackType.Quadrople:
-                _currentMaterial = Quadrople;
+                _currentMaterial = Quadruple;
                 break;
             case TrackType.Turn:
                 _currentMaterial = Turn;
