@@ -49,15 +49,11 @@ public class Tile : MonoBehaviour
             return;
         }
 
-        var newTrack = GameObject.Instantiate(TrackGameObject);
-        newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer), transform.position.z);
+        var newTrackGameObject = GameObject.Instantiate(TrackGameObject);
+        newTrackGameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer), transform.position.z);
 
-        Track = newTrack.GetComponent<Track>();
-        Track.Tile = this;
-        if (newConnection != null)
-        {
-            Track.AddConnection(newConnection.Value);
-        }
+        Track = newTrackGameObject.GetComponent<Track>();
+        Track.Initialize(this, newConnection);
         // TODO: Refactor track builder so that connections are updated all at once at the end, instead of having to be updated repeatedly throughout
     }
 
@@ -93,13 +89,18 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public Track Track { get; private set; }
-    public Structure Structure { get; private set; }
     public Coordinate Coordinate { get; set; }
+    public Track Track { get; private set; }
+    public Road Road { get; private set; }
+    public Structure Structure { get; private set; }
 
     public bool CanBuildTrack
     {
         get { return Structure == null; }
+    }
+    public bool CanBuildRoad
+    {
+        get { return Road == null; }
     }
     public bool CanBuildStructure
     {
