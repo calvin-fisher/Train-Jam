@@ -182,7 +182,11 @@ public class Track : MonoBehaviour
                     this.Connections.Add(track);
                 }
 
-                track.Connections.Add(this);
+                if (!track.Connections.Contains(this))
+                {
+                    track.Connections.Add(this);
+                }
+
                 track.UpdateMaterial();
             }
         }
