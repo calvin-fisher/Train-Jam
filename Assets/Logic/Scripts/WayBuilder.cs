@@ -3,12 +3,12 @@ using UnityEngine;
 using System.Collections;
 using System.Linq;
 
-public class TrackLayer : MonoBehaviour
+public class WayBuilder : MonoBehaviour
 {
-    private bool _layingTrack = false;
-    private Coordinate _trackLayingStart;
-    private Pathfinding.Node _trackLayingPathStartNode;
-    private Coordinate[] _trackLayingPath;
+    private bool _buildingWay = false;
+    private Coordinate _wayBuildingStart;
+    private Pathfinding.Node _wayBuildingPathStartNode;
+    private Coordinate[] _wayBuildingPath;
 
     private Tile MouseoverTile
     {
@@ -35,7 +35,8 @@ public class TrackLayer : MonoBehaviour
         switch (MenuManager.Instance.MenuMode)
         {
             case MenuMode.Track:
-                TrackPlacementMouseDown();
+            case MenuMode.Road:
+                OnMouseDown();
                 break;
         }
     }
@@ -52,79 +53,48 @@ public class TrackLayer : MonoBehaviour
 
     private void OnMouseUp(object sender, EventArgs e)
     {
-        switch (MenuManager.Instance.MenuMode)
-        {
-            case MenuMode.Track:
-                TrackPlacementMouseUp();
-                break;
-        }
+        OnMouseUp();
     }
 
     private void OnMouseoverTileChanged(object sender, MouseoverTileChangedEventArgs e)
     {
-        TrackPlacementMouseoverUpdate(e.NewTile);
+        MouseoverUpdate(e.NewTile);
         BulldozeMouseoverUpdate(e.NewTile);
     }
 
     #endregion
 
-    private void TrackPlacementMouseDown()
+    private void OnMouseDown()
     {
-        if (!_layingTrack && MouseoverTile != null)
+        if (!_buildingWay && MouseoverTile != null)
         {
-            _layingTrack = true;
-            _trackLayingStart = MouseoverTile.Coordinate;
-            TrackPlacementMouseoverUpdate(MouseoverTile);
+            _buildingWay = true;
+            _wayBuildingStart = MouseoverTile.Coordinate;
+            MouseoverUpdate(MouseoverTile);
         }
     }
 
-    public void TrackPlacementMouseUp()
-    {
-        if (_layingTrack)
-        {
-            if (_trackLayingPath != null)
-            {
-                for (var i = 0; i < _trackLayingPath.Length; i++)
-                {
-                    var currentCoordinate = _trackLayingPath[i];
-
-                    Coordinate? previousCoordinate = (i > 0)
-                        ? previousCoordinate = _trackLayingPath[i - 1]
-                        : null;
-
-                    var tile = TileManager.Instance.Get(currentCoordinate);
-
-                    tile.CancelHighlight();
-                    tile.BuildTrack(previousCoordinate);
-                }
-
-                _trackLayingPath = null;
-                _trackLayingPathStartNode = null;
-            }
-        }
-        _layingTrack = false;
-    }
-
-    private void TrackPlacementMouseoverUpdate(Tile mouseoverTile)
+    private void MouseoverUpdate(Tile mouseoverTile)
     {
         // Always clear any previous path
-        if (_trackLayingPath != null)
+        if (_wayBuildingPath != null)
         {
-            foreach (var coordinate in _trackLayingPath)
+            foreach (var coordinate in _wayBuildingPath)
             {
                 TileManager.Instance.Get(coordinate).CancelHighlight();
             }
         }
 
         // If mouse is off-grid, or if not laying track, exit here
-        if (mouseoverTile == null || MenuManager.Instance.MenuMode != MenuMode.Track)
+        if (mouseoverTile == null 
+            || (MenuManager.Instance.MenuMode != MenuMode.Track && MenuManager.Instance.MenuMode != MenuMode.Road))
         {
-            _trackLayingPath = null;
+            _wayBuildingPath = null;
             return;
         }
 
         // If not currently laying track, just highlight the square
-        if (!_layingTrack)
+        if (!_buildingWay)
         {
             if (mouseoverTile != null)
             {
@@ -135,18 +105,59 @@ public class TrackLayer : MonoBehaviour
         }
 
         // Update candidate path
-        _trackLayingPathStartNode = Pathfinding.FindPath(_trackLayingStart, mouseoverTile.Coordinate);
-        if (_trackLayingPathStartNode == null)
+        _wayBuildingPathStartNode = Pathfinding.FindPath(_wayBuildingStart, mouseoverTile.Coordinate);
+        if (_wayBuildingPathStartNode == null)
         {
-            _trackLayingPath = null;
+            _wayBuildingPath = null;
             return;
         }
 
         // Highlight new path
-        _trackLayingPath = _trackLayingPathStartNode.SelfAndSuccessors().Select(x => x.Position).ToArray();
-        foreach (var coordinate in _trackLayingPath)
+        _wayBuildingPath = _wayBuildingPathStartNode.SelfAndSuccessors().Select(x => x.Position).ToArray();
+        foreach (var coordinate in _wayBuildingPath)
         {
             TileManager.Instance.Get(coordinate).Highlight(Color.blue);
+        }
+    }
+
+    public void OnMouseUp()
+    {
+        if (_buildingWay)
+        {
+            if (_wayBuildingPath != null)
+            {
+                for (var i = 0; i < _wayBuildingPath.Length; i++)
+                {
+                    var currentCoordinate = _wayBuildingPath[i];
+
+                    Coordinate? previousCoordinate = (i > 0)
+                        ? previousCoordinate = _wayBuildingPath[i - 1]
+                        : null;
+
+                    var tile = TileManager.Instance.Get(currentCoordinate);
+
+                    tile.CancelHighlight();
+                    BuildWay(tile, previousCoordinate);
+                }
+
+                _wayBuildingPath = null;
+                _wayBuildingPathStartNode = null;
+            }
+        }
+        _buildingWay = false;
+    }
+
+    private void BuildWay(Tile tile, Coordinate? newConnection)
+    {
+        switch (MenuManager.Instance.MenuMode)
+        {
+            case MenuMode.Track:
+                tile.BuildTrack(newConnection);
+                break;
+
+            case MenuMode.Road:
+                tile.BuildRoad(newConnection);
+                break;
         }
     }
 

@@ -93,6 +93,13 @@ public class Tile : MonoBehaviour
             Track = null;
         }
 
+        if (Road != null)
+        {
+            Road.Delete();
+            GameObject.Destroy(Road.gameObject);
+            Road = null;
+        }
+
         if (Structure != null)
         {
             if (Structure.CanBulldoze)
