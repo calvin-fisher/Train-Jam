@@ -5,32 +5,32 @@ using System.Linq;
 
 public class TrackLayer : MonoBehaviour
 {
+    private bool _layingTrack = false;
+    private Coordinate _trackLayingStart;
+    private Pathfinding.Node _trackLayingPathStartNode;
+    private Coordinate[] _trackLayingPath;
+
+    private Tile MouseoverTile
+    {
+        get { return InputManager.Instance.MouseoverTile; }
+    }
+
     // Use this for initialization
     void Start()
     {
+        InputManager.MouseDown += OnMouseDown;
+        InputManager.MouseHeld += OnMouseHeld;
+        InputManager.MouseUp += OnMouseUp;
         InputManager.MouseoverTileChanged += OnMouseoverTileChanged;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            MouseDownEvent();
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            MouseDownHeld();
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            MouseUpEvent();
-        }
     }
 
-    public void MouseDownEvent()
+    #region Mouse Event Handlers
+    public void OnMouseDown(object sender, EventArgs e)
     {
         switch (MenuManager.Instance.MenuMode)
         {
@@ -40,40 +40,39 @@ public class TrackLayer : MonoBehaviour
         }
     }
 
-    private void TrackPlacementMouseDown()
-    {
-        if (!_layingTrack && MouseoverTile != null)
-        {
-            _layingTrack = true;
-            _trackLayingStart = MouseoverTile.Coordinate;
-        }
-    }
-
-    private void BulldozeMouseDown()
-    {
-        if (MouseoverTile != null)
-        {
-            MouseoverTile.Bulldoze();
-        }
-    }
-
-    private void MouseDownHeld()
+    private void OnMouseHeld(object sender, EventArgs e)
     {
         switch (MenuManager.Instance.MenuMode)
         {
             case MenuMode.Bulldoze:
-                BulldozeMouseDown();
+                BulldozeMouseHeld();
                 break;
         }
     }
 
-    private void MouseUpEvent()
+    private void OnMouseUp(object sender, EventArgs e)
     {
         switch (MenuManager.Instance.MenuMode)
         {
             case MenuMode.Track:
                 TrackPlacementMouseUp();
                 break;
+        }
+    }
+
+    private void OnMouseoverTileChanged(object sender, MouseoverTileChangedEventArgs e)
+    {
+        TrackPlacementHighlightingUpdate(e.NewTile);
+    }
+    #endregion
+
+    private void TrackPlacementMouseDown()
+    {
+        if (!_layingTrack && MouseoverTile != null)
+        {
+            _layingTrack = true;
+            _trackLayingStart = MouseoverTile.Coordinate;
+            TrackPlacementHighlightingUpdate(MouseoverTile);
         }
     }
 
@@ -109,12 +108,7 @@ public class TrackLayer : MonoBehaviour
         }
     }
 
-    private Tile MouseoverTile
-    {
-        get { return InputManager.Instance.MouseoverTile; }
-    }
-
-    private void OnMouseoverTileChanged(object sender, MouseoverTileChangedEventArgs e)
+    private void TrackPlacementHighlightingUpdate(Tile mouseoverTile)
     {
         // Clear previous path
         if (_trackLayingPath != null)
@@ -126,14 +120,14 @@ public class TrackLayer : MonoBehaviour
         }
 
         // If off-grid or cancelled, abort
-        if (e.NewTile == null || !_layingTrack || !MenuManager.Instance.IsTrackPlacementOn)
+        if (mouseoverTile == null || !_layingTrack || !MenuManager.Instance.IsTrackPlacementOn)
         {
             _trackLayingPath = null;
             return;
         }
 
         // Update path
-        _trackLayingPathStartNode = Pathfinding.FindPath(_trackLayingStart, e.NewTile.Coordinate);
+        _trackLayingPathStartNode = Pathfinding.FindPath(_trackLayingStart, mouseoverTile.Coordinate);
         if (_trackLayingPathStartNode == null)
         {
             _trackLayingPath = null;
@@ -148,9 +142,11 @@ public class TrackLayer : MonoBehaviour
         }
     }
 
-    private bool _layingTrack = false;
-    private Coordinate _trackLayingStart;
-    private Pathfinding.Node _trackLayingPathStartNode;
-    private Coordinate[] _trackLayingPath;
-
+    private void BulldozeMouseHeld()
+    {
+        if (MouseoverTile != null)
+        {
+            MouseoverTile.Bulldoze();
+        }
+    }
 }

@@ -28,7 +28,22 @@ public class InputManager : MonoBehaviour
     void Update ()
 	{
 	    UpdateMouseoverTile();
-	}
+
+        if (Input.GetMouseButtonDown(0) && MouseDown != null)
+        {
+            MouseDown(this, null);
+        }
+
+        if (Input.GetMouseButton(0) && MouseHeld != null)
+        {
+            MouseHeld(this, null);
+        }
+
+        if (Input.GetMouseButtonUp(0) && MouseUp != null)
+        {
+            MouseUp(this, null);
+        }
+    }
 
     private void UpdateMouseoverTile()
     {
@@ -82,6 +97,9 @@ public class InputManager : MonoBehaviour
 
     public Tile MouseoverTile { get; private set; }
 
+    public static event EventHandler MouseDown;
+    public static event EventHandler MouseHeld;
+    public static event EventHandler MouseUp;
     public static event MouseoverTileChangedEventHandler MouseoverTileChanged;
 }
 
