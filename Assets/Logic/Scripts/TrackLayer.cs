@@ -62,8 +62,10 @@ public class TrackLayer : MonoBehaviour
 
     private void OnMouseoverTileChanged(object sender, MouseoverTileChangedEventArgs e)
     {
-        TrackPlacementHighlightingUpdate(e.NewTile);
+        TrackPlacementMouseoverUpdate(e.NewTile);
+        BulldozeMouseoverUpdate(e.NewTile);
     }
+
     #endregion
 
     private void TrackPlacementMouseDown()
@@ -72,7 +74,7 @@ public class TrackLayer : MonoBehaviour
         {
             _layingTrack = true;
             _trackLayingStart = MouseoverTile.Coordinate;
-            TrackPlacementHighlightingUpdate(MouseoverTile);
+            TrackPlacementMouseoverUpdate(MouseoverTile);
         }
     }
 
@@ -103,9 +105,9 @@ public class TrackLayer : MonoBehaviour
         _layingTrack = false;
     }
 
-    private void TrackPlacementHighlightingUpdate(Tile mouseoverTile)
+    private void TrackPlacementMouseoverUpdate(Tile mouseoverTile)
     {
-        // Clear previous path
+        // Always clear any previous path
         if (_trackLayingPath != null)
         {
             foreach (var coordinate in _trackLayingPath)
@@ -114,14 +116,22 @@ public class TrackLayer : MonoBehaviour
             }
         }
 
-        // If off-grid or cancelled, abort
-        if (mouseoverTile == null || !_layingTrack || !MenuManager.Instance.IsTrackPlacementOn)
+        // If mouse is off-grid, or if not laying track, exit here
+        if (mouseoverTile == null || MenuManager.Instance.MenuMode != MenuMode.Track)
         {
             _trackLayingPath = null;
             return;
         }
 
-        // Update path
+        // If not currently laying track, just highlight the square
+        if (!_layingTrack)
+        {
+            // TODO: Highlight red instead if building is not possible
+            mouseoverTile.Highlight(Color.yellow);
+            return;
+        }
+
+        // Update candidate path
         _trackLayingPathStartNode = Pathfinding.FindPath(_trackLayingStart, mouseoverTile.Coordinate);
         if (_trackLayingPathStartNode == null)
         {
@@ -135,6 +145,15 @@ public class TrackLayer : MonoBehaviour
         {
             TileManager.Instance.Get(coordinate).Highlight(Color.blue);
         }
+    }
+
+    private void BulldozeMouseoverUpdate(Tile mouseoverTile)
+    {
+        if (MenuManager.Instance.MenuMode != MenuMode.Bulldoze)
+            return;
+
+        // TODO: Highlight red instead if bulldozing is not possible
+        mouseoverTile.Highlight(Color.yellow);
     }
 
     private void BulldozeMouseHeld()

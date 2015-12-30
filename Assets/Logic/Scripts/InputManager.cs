@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(ray.origin, ray.direction);
-
+        
         RaycastHit[] raycastHits = Physics.RaycastAll(ray);
         if (raycastHits.Any())
         {
@@ -85,9 +85,6 @@ public class InputManager : MonoBehaviour
 
         if (MouseoverTile != null)
             MouseoverTile.CancelHighlight();
-
-        if (newTile != null)
-            newTile.Highlight(Color.yellow);
 
         MouseoverTile = newTile;
 
