@@ -86,26 +86,21 @@ public class TrackLayer : MonoBehaviour
                 {
                     var currentCoordinate = _trackLayingPath[i];
 
-                    Coordinate? previousCoordinate = null;
-                    if (i - 1 > 0)
-                        previousCoordinate = _trackLayingPath[i - 1];
-
-                    Coordinate? nextCoordinate = null;
-                    if (i + 1 < _trackLayingPath.Length)
-                        nextCoordinate = _trackLayingPath[i + 1];
+                    Coordinate? previousCoordinate = (i > 0)
+                        ? previousCoordinate = _trackLayingPath[i - 1]
+                        : null;
 
                     var tile = TileManager.Instance.Get(currentCoordinate);
 
                     tile.CancelHighlight();
-                    tile.BuildTrack(previousCoordinate, nextCoordinate);
+                    tile.BuildTrack(previousCoordinate);
                 }
 
                 _trackLayingPath = null;
                 _trackLayingPathStartNode = null;
             }
-
-            _layingTrack = false;
         }
+        _layingTrack = false;
     }
 
     private void TrackPlacementHighlightingUpdate(Tile mouseoverTile)

@@ -36,32 +36,29 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public void BuildTrack(Coordinate? prev, Coordinate? next)
+    public void BuildTrack(Coordinate? newConnection = null)
     {
-        const float zLayer = 1f;
+        const float zLayer = 0.1f;
+
+        if (Track != null)
+        {
+            if (newConnection != null)
+            {
+                Track.AddConnection(newConnection.Value);
+            }
+            return;
+        }
 
         var newTrack = GameObject.Instantiate(TrackGameObject);
+        newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer), transform.position.z);
+
         Track = newTrack.GetComponent<Track>();
-        var rotation = new Vector3();
-
-        if (Track == null)
+        Track.Tile = this;
+        if (newConnection != null)
         {
-            //TODO: Determine track type and rotation
-            if (prev == null && next == null) //Single track piece
-            {
-                rotation = this.gameObject.transform.rotation.eulerAngles;
-            }
-            //Double track piece
-            //Triple track piece
-            //Quad track piece
-
-            newTrack.transform.eulerAngles = rotation;
-            newTrack.transform.position = new Vector3(transform.position.x, transform.position.y + (zLayer * float.Epsilon), transform.position.z);
+            Track.AddConnection(newConnection.Value);
         }
-        else
-        {
-            //Compare existing track type to new track type and determine appropriate track type & rotation
-        }
+        // TODO: Refactor track builder so that connections are updated all at once at the end, instead of having to be updated repeatedly throughout
     }
 
     public void BuildStructure()
@@ -81,6 +78,7 @@ public class Tile : MonoBehaviour
     {
         if (Track != null)
         {
+            Track.Delete();
             GameObject.Destroy(Track.gameObject);
             Track = null;
         }

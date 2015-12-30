@@ -1,4 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+
+public enum Direction : byte
+{
+    None = 0,
+    Up = 1,
+    Right = 2,
+    Down = 3,
+    Left = 4,
+}
 
 public struct Coordinate
 {
@@ -11,23 +21,82 @@ public struct Coordinate
     public readonly int X;
     public readonly int Y;
 
+    public Coordinate Up
+    {
+        get {  return new Coordinate(X, Y + 1); }
+    }
+    public Coordinate Down
+    {
+        get { return new Coordinate(X, Y - 1); }
+    }
+    public Coordinate Left
+    {
+        get { return new Coordinate(X - 1, Y); }
+    }
+    public Coordinate Right
+    {
+        get { return new Coordinate(X + 1, Y); }
+    }
+    private IEnumerable<Coordinate> AdjacentNeighbors
+    {
+        get
+        {
+            yield return Up;
+            yield return Down;
+            yield return Left;
+            yield return Right;
+        }
+    }
+
+    public Coordinate GetNeighbor(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Up:
+                return Up;
+
+            case Direction.Right:
+                return Right;
+
+            case Direction.Down:
+                return Down;
+
+            case Direction.Left:
+                return Left;
+
+            default:
+                return this;
+        }
+    }
+
+    public Direction GetDirectionToNeighbor(Coordinate neighbor)
+    {
+        if (neighbor == Up)
+        {
+            return Direction.Up;
+        }
+        else if (neighbor == Right)
+        {
+            return Direction.Right;
+        }
+        else if (neighbor == Down)
+        {
+            return Direction.Down;
+        }
+        else if (neighbor == Left)
+        {
+            return Direction.Left;
+        }
+        else
+        {
+            return Direction.None;
+        }
+    }
+
     public IEnumerable<Coordinate> GetAdjacentNeighbors()
     {
-        var right = new Coordinate(X + 1, Y);
-        if (TileManager.Instance.IsValidCoordinate(right))
-            yield return right;
-
-        var up = new Coordinate(X, Y + 1);
-        if (TileManager.Instance.IsValidCoordinate(up))
-            yield return up;
-
-        var left = new Coordinate(X - 1, Y);
-        if (TileManager.Instance.IsValidCoordinate(left))
-            yield return left;
-
-        var down = new Coordinate(X, Y - 1);
-        if (TileManager.Instance.IsValidCoordinate(down))
-            yield return down;
+        return AdjacentNeighbors
+            .Where(TileManager.Instance.IsValidCoordinate);
     }
 
     #region Equality Operators
