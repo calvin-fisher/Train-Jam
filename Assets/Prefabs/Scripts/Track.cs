@@ -52,11 +52,10 @@ public class Track : MonoBehaviour
                 UpdateMaterial3();
                 break;
 
+            default:
             case 4:
                 MeshRenderer.material = Quadruple;
                 break;
-
-            // TODO: Default
         }
     }
 
