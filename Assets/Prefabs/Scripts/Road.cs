@@ -69,22 +69,20 @@ public class Road : Way
         switch (direction)
         {
             case Direction.Up:
-                this.transform.localEulerAngles = new Vector3(90, 0, 0);
-                break;
-
-            case Direction.Right:
                 this.transform.localEulerAngles = new Vector3(90, 90, 0);
                 break;
 
-            case Direction.Down:
+            case Direction.Right:
                 this.transform.localEulerAngles = new Vector3(90, 180, 0);
                 break;
 
-            case Direction.Left:
+            case Direction.Down:
                 this.transform.localEulerAngles = new Vector3(90, 270, 0);
                 break;
 
-                // TODO: Default
+            case Direction.Left:
+                this.transform.localEulerAngles = new Vector3(90, 0, 0);
+                break;
         }
     }
 
@@ -94,13 +92,13 @@ public class Road : Way
         {
             // All tiles are in a row on the X axis
             MeshRenderer.material = Double;
-            this.transform.localEulerAngles = new Vector3(90, 0, 0);
+            this.transform.localEulerAngles = new Vector3(90, 90, 0);
         }
         else if (Connections.TrueForAll(connection => connection.Tile.Coordinate.Y == this.Tile.Coordinate.Y))
         {
             // All tiles are in a row on the Y axis
             MeshRenderer.material = Double;
-            this.transform.localEulerAngles = new Vector3(90, 90, 0);
+            this.transform.localEulerAngles = new Vector3(90, 0, 0);
         }
         else
         {
@@ -110,22 +108,22 @@ public class Road : Way
             {
                 if (directions.Contains(Direction.Right))
                 {
-                    this.transform.localEulerAngles = new Vector3(90, 90, 0);
+                    this.transform.localEulerAngles = new Vector3(90, 0, 0);
                 }
                 else //if (directions.Contains(Direction.Left))
                 {
-                    this.transform.localEulerAngles = new Vector3(90, 0, 0);
+                    this.transform.localEulerAngles = new Vector3(90, 270, 0);
                 }
             }
             else // if (directions.Contains(Direction.Down))
             {
                 if (directions.Contains(Direction.Right))
                 {
-                    this.transform.localEulerAngles = new Vector3(90, 180, 0);
+                    this.transform.localEulerAngles = new Vector3(90, 90, 0);
                 }
                 else //if (directions.Contains(Direction.Left))
                 {
-                    this.transform.localEulerAngles = new Vector3(90, 270, 0);
+                    this.transform.localEulerAngles = new Vector3(90, 180, 0);
                 }
             }
         }
@@ -137,19 +135,19 @@ public class Road : Way
         var directions = Connections.Select(x => this.Tile.Coordinate.GetDirectionToNeighbor(x.Tile.Coordinate)).ToArray();
         if (!directions.Contains(Direction.Left))
         {
-            this.transform.localEulerAngles = new Vector3(90, 0, 0);
+            this.transform.localEulerAngles = new Vector3(90, 90, 0);
         }
         else if (!directions.Contains(Direction.Up))
         {
-            this.transform.localEulerAngles = new Vector3(90, 90, 0);
+            this.transform.localEulerAngles = new Vector3(90, 180, 0);
         }
         else if (!directions.Contains(Direction.Right))
         {
-            this.transform.localEulerAngles = new Vector3(90, 180, 0);
+            this.transform.localEulerAngles = new Vector3(90, 270, 0);
         }
         else //if (!directions.Contains(Direction.Down))
         {
-            this.transform.localEulerAngles = new Vector3(90, 270, 0);
+            this.transform.localEulerAngles = new Vector3(90, 0, 0);
         }
     }
     #endregion

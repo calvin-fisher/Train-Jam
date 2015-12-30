@@ -75,8 +75,6 @@ public class Track : Way
             case Direction.Left:
                 this.transform.localEulerAngles = new Vector3(90, 270, 0);
                 break;
-
-            // TODO: Default
         }
     }
 
