@@ -33,6 +33,10 @@ public class MenuManager : MonoBehaviour
 	    {
 	        _trackToggle.isOn = !_trackToggle.isOn;
 	    }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            _roadToggle.isOn = !_roadToggle.isOn;
+        }
         else if (Input.GetKeyDown(KeyCode.B))
         {
             _bulldozeToggle.isOn = !_bulldozeToggle.isOn;
